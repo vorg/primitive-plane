@@ -1,0 +1,26 @@
+{
+  "name": "demo",
+  "version": "0.0.0",
+  "description": "A pritimive-plane demo",
+  "main": "main.js",
+  "scripts": {
+    "start": "beefy main.js --open -- -i plask -g glslify-promise/transform"
+  },
+  "author": {
+    "name": "Marcin Ignac",
+    "email": "marcin.ignac@gmail.com",
+    "url": "https://github.com/vorg"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "beefy": "^2.1.5",
+    "browserify": "^13.0.0"
+  },
+  "dependencies": {
+    "glslify-promise": "^1.0.1",
+    "pex-context": "1.0.0-beta.3",
+    "pex-io": "1.0.0-beta.1",
+    "pex-math": "1.0.0-beta.1",
+    "pex-sys": "1.0.0-beta.8"
+  }
+}
