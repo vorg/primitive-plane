@@ -10,19 +10,21 @@ Plane geometry including UVs and normals
 
 [![NPM](https://nodei.co/npm/primitive-plane.png)](https://www.npmjs.com/package/primitive-plane)
 
-#### `mesh = createPlane([sx, sy, nx, ny])`
+#### `mesh = createPlane([sx, sy, nx, ny, options])`
 
 Parameters:  
 `sx` - size x, defaults to 1  
 `sy` - size y, defaults to `sx`  
 `nx` - num x subdivisions, defaults to 1  
 `ny` - num y subdivisions, defaults to 1  
+`options` - { quads: bool }  
+`options.quads` - generates quads instead of triangles, defaults to false
 
 ## Example
 
 ```javascript
 var createPlane = require('primtivie-plane');
-var plane = createPlane(1, 1, 2, 2);
+var plane = createPlane(1, 1, 2, 2, { quads: true });
 ```
 
 `plane` will have the following structure:
