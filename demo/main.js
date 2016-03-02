@@ -3,6 +3,7 @@ var Mat4         = require('pex-math/Mat4');
 var Vec3         = require('pex-math/Vec3');
 var glslify      = require('glslify-promise');
 var createPlane  = require('../index.js');
+var computeEdges = require('geom-edges');
 
 Window.create({
     settings: {
@@ -11,7 +12,8 @@ Window.create({
     },
     resources: {
         vert: { glsl: glslify(__dirname + '/Material.vert') },
-        frag: { glsl: glslify(__dirname + '/Material.frag') }
+        frag: { glsl: glslify(__dirname + '/Material.frag') },
+        fragSolidColor: { glsl: glslify(__dirname + '/SolidColor.frag') },
     },
     init: function() {
         var ctx = this.getContext();
@@ -37,8 +39,9 @@ Window.create({
         var res = this.getResources();
 
         this.program = ctx.createProgram(res.vert, res.frag);
+        this.programSolidColor = ctx.createProgram(res.vert, res.fragSolidColor);
 
-        var g = createPlane();
+        var g = createPlane(1,1,5,5);
 
         var attributes = [
             { data: g.positions, location: ctx.ATTRIB_POSITION },
@@ -49,6 +52,18 @@ Window.create({
         var indices = { data: g.cells };
 
         this.mesh = ctx.createMesh(attributes, indices, ctx.TRIANGLES);
+
+        var gEdges = createPlane(1,1,5,5, { quads: true });
+
+        var attributesEdges = [
+            { data: gEdges.positions, location: ctx.ATTRIB_POSITION },
+            { data: gEdges.normals, location: ctx.ATTRIB_NORMAL },
+            { data: gEdges.uvs, location: ctx.ATTRIB_TEX_COORD_0 },
+        ];
+
+        var indicesEdges = { data: computeEdges(gEdges.cells) };
+
+        this.meshEdges = ctx.createMesh(attributesEdges, indicesEdges, ctx.LINES);
 
         var img = new Uint8Array([
             0xff, 0xff, 0xff, 0xff, 0xcc, 0xcc, 0xcc, 0xff,
@@ -69,6 +84,7 @@ Window.create({
         ctx.setDepthTest(true);
 
         ctx.bindTexture(this.tex, 0);
+
         ctx.bindProgram(this.program);
         this.program.setUniform('uTexture', 0);
 
@@ -76,7 +92,12 @@ Window.create({
         ctx.setModelMatrix(this.model);
 
         ctx.bindMesh(this.mesh);
+        ctx.drawMesh();
 
+        ctx.bindProgram(this.programSolidColor);
+        ctx.setLineWidth(2)
+        this.programSolidColor.setUniform('uColor', [1,0,0,1]);
+        ctx.bindMesh(this.meshEdges);
         ctx.drawMesh();
     }
 })
