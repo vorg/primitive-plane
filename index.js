@@ -31,7 +31,7 @@ function createPlane(sx, sy, nx, ny, options) {
                 }
                 else {
                     cells.push([iy * (nx+1) + ix, (iy + 1) * (nx+1) + ix + 1, iy * (nx+1) + ix + 1]);
-                    cells.push([iy * (nx+1) + ix, (iy + 1) * (nx+1) + ix + 1, (iy+1) * (nx+1) + ix]);
+                    cells.push([(iy + 1) * (nx+1) + ix + 1, iy * (nx+1) + ix, (iy+1) * (nx+1) + ix]);
                 }
             }
         }
