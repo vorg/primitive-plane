@@ -27,7 +27,7 @@ function createPlane(sx, sy, nx, ny, options) {
             normals.push([0, 0, 1]);
             if (iy < ny && ix < nx) {
                 if (quads) {
-                    cells.push([iy * (nx+1) + ix, iy * (nx+1) + ix + 1, (iy + 1) * (nx+1) + ix + 1, (iy+1) * (nx+1) + ix]);
+                    cells.push([iy * (nx+1) + ix, (iy+1) * (nx+1) + ix, (iy + 1) * (nx+1) + ix + 1, iy * (nx+1) + ix + 1]);
                 }
                 else {
                     cells.push([iy * (nx+1) + ix, (iy + 1) * (nx+1) + ix + 1, iy * (nx+1) + ix + 1]);
