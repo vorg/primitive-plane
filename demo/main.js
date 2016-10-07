@@ -1,103 +1,102 @@
-var Window       = require('pex-sys/Window');
-var Mat4         = require('pex-math/Mat4');
-var Vec3         = require('pex-math/Vec3');
-var glslify      = require('glslify-promise');
-var createPlane  = require('../index.js');
-var computeEdges = require('geom-edges');
+var Window = require('pex-sys/Window')
+var Mat4 = require('pex-math/Mat4')
+var glslify = require('glslify-promise')
+var createPlane = require('../index.js')
+var computeEdges = require('geom-edges')
 
 Window.create({
-    settings: {
-        width: 1024,
-        height: 576
-    },
-    resources: {
-        vert: { glsl: glslify(__dirname + '/Material.vert') },
-        frag: { glsl: glslify(__dirname + '/Material.frag') },
-        fragSolidColor: { glsl: glslify(__dirname + '/SolidColor.frag') },
-    },
-    init: function() {
-        var ctx = this.getContext();
+  settings: {
+    width: 1024,
+    height: 576
+  },
+  resources: {
+    vert: { glsl: glslify(__dirname + '/Material.vert') },
+    frag: { glsl: glslify(__dirname + '/Material.frag') },
+    fragSolidColor: { glsl: glslify(__dirname + '/SolidColor.frag') }
+  },
+  init: function () {
+    var ctx = this.getContext()
 
-        this.model = Mat4.create();
+    this.model = Mat4.create()
 
-        this.projection = Mat4.perspective(
-            Mat4.create(),
-            45,
-            this.getAspectRatio(),
-            0.001,
-            10.0
-        );
+    this.projection = Mat4.perspective(
+      Mat4.create(),
+      45,
+      this.getAspectRatio(),
+      0.001,
+      10.0
+    )
 
-        this.view = Mat4.create();
+    this.view = Mat4.create()
 
-        Mat4.lookAt(this.view, [0, 1, 3], [0, 0, 0], [0, 1, 0]);
+    Mat4.lookAt(this.view, [0, 1, 3], [0, 0, 0], [0, 1, 0])
 
-        ctx.setProjectionMatrix(this.projection);
-        ctx.setViewMatrix(this.view);
-        ctx.setModelMatrix(this.model);
+    ctx.setProjectionMatrix(this.projection)
+    ctx.setViewMatrix(this.view)
+    ctx.setModelMatrix(this.model)
 
-        var res = this.getResources();
+    var res = this.getResources()
 
-        this.program = ctx.createProgram(res.vert, res.frag);
-        this.programSolidColor = ctx.createProgram(res.vert, res.fragSolidColor);
+    this.program = ctx.createProgram(res.vert, res.frag)
+    this.programSolidColor = ctx.createProgram(res.vert, res.fragSolidColor)
 
-        var g = createPlane(1,1,5,5);
+    var g = createPlane(1, 1, 5, 5)
 
-        var attributes = [
-            { data: g.positions, location: ctx.ATTRIB_POSITION },
-            { data: g.normals, location: ctx.ATTRIB_NORMAL },
-            { data: g.uvs, location: ctx.ATTRIB_TEX_COORD_0 },
-        ];
+    var attributes = [
+      { data: g.positions, location: ctx.ATTRIB_POSITION },
+      { data: g.normals, location: ctx.ATTRIB_NORMAL },
+      { data: g.uvs, location: ctx.ATTRIB_TEX_COORD_0 }
+    ]
 
-        var indices = { data: g.cells };
+    var indices = { data: g.cells }
 
-        this.mesh = ctx.createMesh(attributes, indices, ctx.TRIANGLES);
+    this.mesh = ctx.createMesh(attributes, indices, ctx.TRIANGLES)
 
-        var gEdges = createPlane(1,1,5,5, { quads: true });
+    var gEdges = createPlane(1, 1, 5, 5, { quads: true })
 
-        var attributesEdges = [
-            { data: gEdges.positions, location: ctx.ATTRIB_POSITION },
-            { data: gEdges.normals, location: ctx.ATTRIB_NORMAL },
-            { data: gEdges.uvs, location: ctx.ATTRIB_TEX_COORD_0 },
-        ];
+    var attributesEdges = [
+      { data: gEdges.positions, location: ctx.ATTRIB_POSITION },
+      { data: gEdges.normals, location: ctx.ATTRIB_NORMAL },
+      { data: gEdges.uvs, location: ctx.ATTRIB_TEX_COORD_0 }
+    ]
 
-        var indicesEdges = { data: computeEdges(gEdges.cells) };
+    var indicesEdges = { data: computeEdges(gEdges.cells) }
 
-        this.meshEdges = ctx.createMesh(attributesEdges, indicesEdges, ctx.LINES);
+    this.meshEdges = ctx.createMesh(attributesEdges, indicesEdges, ctx.LINES)
 
-        var img = new Uint8Array([
-            0xff, 0xff, 0xff, 0xff, 0xcc, 0xcc, 0xcc, 0xff,
-            0xcc, 0xcc, 0xcc, 0xff, 0xff, 0xff, 0xff, 0xff
-        ]);
+    var img = new Uint8Array([
+      0xff, 0xff, 0xff, 0xff, 0xcc, 0xcc, 0xcc, 0xff,
+      0xcc, 0xcc, 0xcc, 0xff, 0xff, 0xff, 0xff, 0xff
+    ])
 
-        this.tex = ctx.createTexture2D(img, 2, 2, {
-          repeat: true,
-          minFilter: ctx.NEAREST,
-          magFilter: ctx.NEAREST
-        })
-    },
+    this.tex = ctx.createTexture2D(img, 2, 2, {
+      repeat: true,
+      minFilter: ctx.NEAREST,
+      magFilter: ctx.NEAREST
+    })
+  },
 
-    draw: function() {
-        var ctx = this.getContext();
-        ctx.setClearColor(1, 1, 1, 1);
-        ctx.clear(ctx.COLOR_BIT | ctx.DEPTH_BIT);
-        ctx.setDepthTest(true);
+  draw: function () {
+    var ctx = this.getContext()
+    ctx.setClearColor(1, 1, 1, 1)
+    ctx.clear(ctx.COLOR_BIT | ctx.DEPTH_BIT)
+    ctx.setDepthTest(true)
 
-        ctx.bindTexture(this.tex, 0);
+    ctx.bindTexture(this.tex, 0)
 
-        ctx.bindProgram(this.program);
-        this.program.setUniform('uTexture', 0);
+    ctx.bindProgram(this.program)
+    this.program.setUniform('uTexture', 0)
 
-        Mat4.rotate(this.model, Math.PI/100, [0, 1, 0]);
-        ctx.setModelMatrix(this.model);
+    Mat4.rotate(this.model, Math.PI / 100, [0, 1, 0])
+    ctx.setModelMatrix(this.model)
 
-        ctx.bindMesh(this.mesh);
-        ctx.drawMesh();
+    ctx.bindMesh(this.mesh)
+    ctx.drawMesh()
 
-        ctx.bindProgram(this.programSolidColor);
-        ctx.setLineWidth(2)
-        this.programSolidColor.setUniform('uColor', [1,0,0,1]);
-        ctx.bindMesh(this.meshEdges);
-        ctx.drawMesh();
-    }
+    ctx.bindProgram(this.programSolidColor)
+    ctx.setLineWidth(2)
+    this.programSolidColor.setUniform('uColor', [1, 0, 0, 1])
+    ctx.bindMesh(this.meshEdges)
+    ctx.drawMesh()
+  }
 })
