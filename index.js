@@ -23,7 +23,7 @@ function createPlane (sx, sy, nx, ny, options) {
       var x = -sx / 2 + u * sx // starts on the left
       var y = sy / 2 - v * sy // starts at the top
       positions.push([x, y, 0])
-      uvs.push([u, v])
+      uvs.push([u, 1.0 - v])
       normals.push([0, 0, 1])
       if (iy < ny && ix < nx) {
         if (quads) {
