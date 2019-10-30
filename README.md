@@ -14,7 +14,7 @@ Plane geometry including UVs and normals
 
 Parameters:  
 `sx` - size x, defaults to 1  
-`sy` - size y, defaults to `sx`  
+`sy` - size y, defaults to 1
 `nx` - num x subdivisions, defaults to 1  
 `ny` - num y subdivisions, defaults to 1  
 `options` - { quads: bool }  
@@ -23,7 +23,7 @@ Parameters:
 ## Example
 
 ```javascript
-var createPlane = require('primtivie-plane');
+var createPlane = require('primitive-plane');
 var plane = createPlane(1, 1, 2, 2, { quads: true });
 ```
 
