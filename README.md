@@ -12,12 +12,12 @@ Plane geometry including UVs and normals
 
 #### `mesh = createPlane([sx, sy, nx, ny, options])`
 
-Parameters:  
-`sx` - size x, defaults to 1  
-`sy` - size y, defaults to 1
-`nx` - num x subdivisions, defaults to 1  
-`ny` - num y subdivisions, defaults to 1  
-`options` - { quads: bool }  
+Parameters:
+`sx` - size x, defaults to 1
+`sy` - size y, defaults to `sx`
+`nx` - num x subdivisions, defaults to 1
+`ny` - num y subdivisions, defaults to `nx`
+`options` - { quads: bool }
 `options.quads` - generates quads instead of triangles, defaults to false
 
 ## Example
