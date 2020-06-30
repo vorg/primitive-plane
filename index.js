@@ -6,9 +6,9 @@
 // 12  13  14  15
 function createPlane (sx, sy, nx, ny, options) {
   sx = sx || 1
-  sy = sy || 1
+  sy = sy || sx
   nx = nx || 1
-  ny = ny || 1
+  ny = ny || nx
   var quads = (options && options.quads) ? options.quads : false
 
   var positions = []
